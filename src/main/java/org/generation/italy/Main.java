@@ -24,6 +24,7 @@ public class Main {
 				String state =sc.next();
 				sc.close();
 				
+				
 				try {
 					
 					try(Connection con = DriverManager.getConnection(url, user, password)){
@@ -34,7 +35,7 @@ public class Main {
 							+ "JOIN continents ON regions.continent_id = continents.continent_id;";
 					
 					try(PreparedStatement ps = con.prepareStatement(sql)){
-					
+					ps.setString(1, state);
 						try(ResultSet rs = ps.executeQuery()){
 						
 					
@@ -56,7 +57,6 @@ public class Main {
 				}} catch (SQLException ex) {
 					
 					ex.printStackTrace();	
-					System.out.println("error:"+ ex.getMessage());
 				}
 				}}
 
