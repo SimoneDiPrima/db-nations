@@ -6,58 +6,57 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Scanner;
 
 public class Main {
-
-	public static void main(String[] args) {
+	private final static String url = "jdbc:mysql://localhost:/nations";
+	private final static String user = "root";
+	private final static String password = "root";
 	
-		
-				String url = "jdbc:mysql://localhost:/nations";
-				String user = "root";
-				String password = "root";
-				String continentsName = "";
-				 
-				Connection con = null;
+	public static void main(String[] args) {
+				querynation();
+				
+				}
+				
+	private static void querynation() {
+				Scanner sc =new Scanner(System.in);
+				System.out.println("cerca una nazione:");
+				String state =sc.next();
+				sc.close();
+				
 				try {
 					
-					con = DriverManager.getConnection(url, user, password);
+					try(Connection con = DriverManager.getConnection(url, user, password)){
 					
 					final String sql = "SELECT countries.country_id,countries.name,"
 							+ " countries.region_id FROM countries JOIN regions"
 							+ " ON countries.region_id = regions.region_id "
 							+ "JOIN continents ON regions.continent_id = continents.continent_id;";
 					
-					PreparedStatement ps = con.prepareStatement(sql);
+					try(PreparedStatement ps = con.prepareStatement(sql)){
 					
-					ResultSet rs = ps.executeQuery();
+						try(ResultSet rs = ps.executeQuery()){
+						
 					
 					while(rs.next()) {
 						
 						final int id = rs.getInt(1);
 						final String name = rs.getString(2);
 						final String Regionsname = rs.getString(3);
-						final String Continentsname = rs.getString(3);
+	
 						
 						
 						System.out.println(id + " - " + name+
-								 " - " + Regionsname + "-" );
+								 " - " + Regionsname + "-" + "-");
+						ps.close();
+					}
+					}
 					}
 					
-					ps.close();
+				}} catch (SQLException ex) {
 					
-				} catch (SQLException ex) {
-					
-					ex.printStackTrace();
-				} finally{
-					
-					try {
-						con.close();
-					} catch (Exception e) { }
+					ex.printStackTrace();	
+					System.out.println("error:"+ ex.getMessage());
 				}
-
-			}
-
-		
-
-	}
+				}}
 
