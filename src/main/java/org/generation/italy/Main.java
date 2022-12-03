@@ -19,22 +19,17 @@ public class Main {
 				}
 				
 	private static void querynation() {
-				Scanner sc =new Scanner(System.in);
+		try(Connection con = DriverManager.getConnection(url, user, password);Scanner sc =new Scanner(System.in)){
 				System.out.println("cerca una nazione:");
-				String state =sc.next();
-				sc.close();
-				
-				
-				try {
+				String state =sc.nextLine();
 					
-					try(Connection con = DriverManager.getConnection(url, user, password)){
+					final String sqlRegCon = " SELECT countries.country_id AS 'id', countries.name AS 'country', regions.name AS 'region', continents.name AS 'continent' "
+							 + " FROM countries "+ "JOIN regions "+ "ON countries.region_id = regions.region_id "
+							 + "JOIN continents "+ "ON regions.continent_id = continents.continent_id "
+							 + "WHERE countries.name LIKE ? "+ "ORDER BY countries.name ";
+							
 					
-					final String sql = "SELECT countries.country_id,countries.name,"
-							+ " countries.region_id FROM countries JOIN regions"
-							+ " ON countries.region_id = regions.region_id "
-							+ "JOIN continents ON regions.continent_id = continents.continent_id;";
-					
-					try(PreparedStatement ps = con.prepareStatement(sql)){
+					try(PreparedStatement ps = con.prepareStatement(sqlRegCon)){
 					ps.setString(1, state);
 						try(ResultSet rs = ps.executeQuery()){
 						
@@ -44,19 +39,16 @@ public class Main {
 						final int id = rs.getInt(1);
 						final String name = rs.getString(2);
 						final String Regionsname = rs.getString(3);
-	
+						final String continent = rs.getString(4);
 						
-						
-						System.out.println(id + " - " + name+
-								 " - " + Regionsname + "-" + "-");
-						ps.close();
+						System.out.println("(" + id + ") " + name
+									+ " - " + Regionsname + " - " + continent);
 					}
 					}
 					}
+				
+				} catch (SQLException ex) {
 					
-				}} catch (SQLException ex) {
-					
-					ex.printStackTrace();	
-				}
-				}}
+				 System.err.println("ERROR: " );
+}}}
 
