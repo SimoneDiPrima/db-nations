@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
-	private final static String url = "jdbc:mysql://localhost:/nations";
+	private final static String url = "jdbc:mysql://localhost:3306/nations";
 	private final static String user = "root";
 	private final static String password = "root";
 	
@@ -20,8 +20,10 @@ public class Main {
 				
 	private static void querynation() {
 		try(Connection con = DriverManager.getConnection(url, user, password);Scanner sc =new Scanner(System.in)){
+			
+					 
 				System.out.println("cerca una nazione:");
-				String state =sc.nextLine();
+				String state ='%' + sc.nextLine() + '%';
 					
 					final String sqlRegCon = " SELECT countries.country_id AS 'id', countries.name AS 'country', regions.name AS 'region', continents.name AS 'continent' "
 							 + " FROM countries "+ "JOIN regions "+ "ON countries.region_id = regions.region_id "
